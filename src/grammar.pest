@@ -2,9 +2,9 @@ WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
 COMMENT = _{ "//" ~ (!"\n" ~ ANY)* }
 
 object = {
- "{" 
+ "("
  ~ object_value* 
- ~ "}"
+ ~ ")"
 }
 
 object_value = _{
@@ -16,16 +16,16 @@ spread = {
 }
 
 array = {
-  "[" 
-  ~ array_value* 
-  ~ "]"
+  "("
+  ~ array_value*
+  ~ ")"
 }
 
 array_value = _{
   value | spread
 }
 
-pair = { path ~ "=" ~ value }
+pair = { path ~ ":" ~ value }
 
 path = ${
   path_seg
@@ -45,7 +45,7 @@ quoted_path_char = _{
 
 regular_path_seg = ${ path_char + }
 
-path_char = _{ !( WHITESPACE | "=" | "." ) ~ ANY }
+path_char = _{ !( WHITESPACE | ":" | "." ) ~ ANY }
 
 value = _{ object | array | input | string | float | integer | boolean | null }
 
@@ -86,7 +86,7 @@ float = @{
 
 input = ${ !"\\" ~ "$" ~ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")+ }
 
-assignment = { input ~ "=" ~ value }
+assignment = { input ~ ":" ~ value }
 
 assign_block = { "let" ~ "{" ~ assignment* ~ "}" ~ "in" }
 
